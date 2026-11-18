@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Titulación FISEI · Jul–Dic 2026</title>
+<style>
+:root{
+  --bg:#f6f4ef; --card:#fff; --ink:#1d1f24; --muted:#6b6f78; --line:#e3dfd6; --soft:#efece4;
+  --blue:#2f6fdb; --blue-bg:#e7effc; --green:#178a5b; --green-bg:#e3f4ec; --amber:#b7791f; --amber-bg:#fbf1dc;
+  --red:#c2362f; --red-bg:#fbe6e4; --gray:#8a8f98; --gray-bg:#eeede9;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select{font:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 20px 60px}
+header{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+h1{font-size:22px;margin:0;letter-spacing:-.01em}
+h1 small{display:block;font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;background:var(--soft);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;padding:5px 12px;border-radius:999px;cursor:pointer;color:var(--muted)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08);font-weight:600}
+.field{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.field input,.field select{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 8px;color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
+.grid-top{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:16px}
+@media (max-width:860px){.grid-top{grid-template-columns:1fr}}
+.here{padding:18px 20px;position:relative;overflow:hidden}
+.here .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.here h2{margin:4px 0 8px;font-size:20px}
+.here .meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:14px;margin-bottom:12px}
+.big{font-size:30px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.bar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--blue);border-radius:99px}
+.now{padding:16px 18px}
+.now h3{margin:0 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.chip{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;border-radius:9px;background:var(--blue-bg);margin-bottom:6px;cursor:pointer;font-size:14px}
+.chip b{font-weight:600}
+.chip span{white-space:nowrap;font-size:12px;color:var(--blue);font-weight:600}
+.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:99px;padding:2px 9px;white-space:nowrap}
+.s-hecho{background:var(--green-bg);color:var(--green)}
+.s-disponible{background:var(--blue-bg);color:var(--blue)}
+.s-en_espera{background:var(--amber-bg);color:var(--amber)}
+.s-bloqueado{background:var(--gray-bg);color:#5b6068}
+.s-proximo{background:var(--gray-bg);color:var(--gray)}
+.s-vencido{background:var(--red-bg);color:var(--red)}
+.alerts{margin-bottom:16px;display:grid;gap:8px}
+.alert{padding:10px 14px;border-radius:10px;background:var(--red-bg);color:#7d221d;font-size:14px;border:1px solid #f2c9c5}
+.section-title{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 10px}
+.section-title h2{font-size:17px;margin:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px}
+/* Gantt */
+.gantt{padding:14px 16px 16px;overflow-x:auto}
+.g-inner{min-width:820px;position:relative}
+.g-axis{display:grid;margin-left:250px;height:34px;position:relative;font-size:11px;color:var(--muted)}
+.g-day{position:absolute;top:0;height:100%;white-space:nowrap;border-left:1px solid transparent;padding-left:3px}
+.g-day.week{border-left-color:var(--line)}
+.g-day .m{font-weight:700;color:var(--ink)}
+.g-row{display:flex;align-items:center;height:30px;cursor:pointer}
+.g-row:hover .g-label{color:var(--blue)}
+.g-label{width:250px;flex:none;font-size:13px;padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-label em{font-style:normal;color:var(--muted);font-size:11px;margin-right:6px}
+.g-track{position:relative;flex:1;height:100%}
+.g-bar{position:absolute;top:7px;height:16px;border-radius:5px;min-width:8px}
+.g-bar.cut{border-top-left-radius:0;border-bottom-left-radius:0}
+.g-bar.cut::before{content:"◂ jul";position:absolute;left:4px;top:0;font-size:10px;line-height:16px;color:#fff;opacity:.85}
+.g-phase{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:10px 0 2px}
+.g-grid{position:absolute;top:34px;bottom:0;left:250px;right:0;pointer-events:none}
+.g-grid i{position:absolute;top:0;bottom:0;border-left:1px dashed #ece8df}
+.g-today{position:absolute;top:24px;bottom:0;border-left:2px solid var(--red);z-index:3;pointer-events:none}
+.g-today b{position:absolute;top:-2px;left:4px;background:var(--red);color:#fff;font-size:10px;padding:1px 5px;border-radius:4px;white-space:nowrap}
+.b-hecho{background:var(--green)} .b-disponible{background:var(--blue)} .b-en_espera{background:#e0a33f}
+.b-bloqueado{background:repeating-linear-gradient(45deg,#c9ccd2 0 5px,#dcdfe4 5px 10px)} .b-proximo{background:#cfd2d8} .b-vencido{background:var(--red)}
+.g-row.cur .g-label{font-weight:700}
+.g-row.cur .g-bar{outline:2px solid var(--ink);outline-offset:1px}
+/* Steps */
+.phase{margin-top:18px}
+.phase-h{display:flex;align-items:center;gap:10px;margin:0 0 8px}
+.phase-h .dot{width:10px;height:10px;border-radius:50%}
+.phase-h h3{margin:0;font-size:15px}
+.step{margin-bottom:8px;border-left:4px solid var(--line)}
+.step.st-hecho{border-left-color:var(--green)} .step.st-disponible{border-left-color:var(--blue)}
+.step.st-vencido{border-left-color:var(--red)} .step.st-en_espera{border-left-color:#e0a33f}
+.step.cur{box-shadow:0 0 0 2px var(--ink)}
+.step-h{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:12px 14px;cursor:pointer}
+.num{width:26px;height:26px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted)}
+.st-hecho .num{background:var(--green);color:#fff}
+.step-h .t{font-weight:600}
+.step-h .sub{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:2px}
+.step-h .right{text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.small{font-size:12px;color:var(--muted)}
+.step-b{padding:0 16px 16px 54px;display:none}
+.step.open .step-b{display:block}
+.desc{color:#3a3d44;margin:0 0 10px}
+.kv{font-size:13px;color:var(--muted);margin-bottom:10px}
+.kv code{background:var(--soft);padding:1px 6px;border-radius:5px;color:var(--ink);user-select:all}
+.blocked{background:var(--gray-bg);border-radius:8px;padding:8px 10px;font-size:13px;margin-bottom:10px}
+.blocked a{color:var(--blue);cursor:pointer}
+.docs{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
+.doc{display:grid;grid-template-columns:22px 1fr auto;gap:10px;padding:10px 12px;border-top:1px solid var(--line);align-items:start}
+.doc:first-child{border-top:0}
+.doc.drag{background:var(--blue-bg)}
+.chk{width:20px;height:20px;border-radius:6px;border:2px solid #c9c5bb;display:grid;place-items:center;font-size:12px;color:#fff;margin-top:1px}
+.doc.ok .chk{background:var(--green);border-color:var(--green)}
+.doc .n{font-size:14px}
+.doc .n .opt{font-size:11px;color:var(--muted);margin-left:6px;border:1px solid var(--line);border-radius:5px;padding:0 5px}
+.doc .note{font-size:12px;color:var(--muted);margin-top:2px}
+.files{margin-top:6px;display:grid;gap:4px}
+.file{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;background:var(--soft);border-radius:7px;padding:4px 8px}
+.file a{color:var(--ink);text-decoration:none;font-weight:500}
+.file a:hover{text-decoration:underline}
+.file .x{border:0;background:none;color:var(--muted);cursor:pointer;padding:0 4px}
+.file .x:hover{color:var(--red)}
+.file input[type=date]{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:1px 4px}
+.doc-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 11px;cursor:pointer;font-size:13px;text-decoration:none;color:var(--ink);display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.btn:hover{border-color:#c8c3b8}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.ghost{background:transparent}
+.row-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:13px;min-height:54px;resize:vertical;margin-top:10px}
+.notes-grade{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0;font-size:13px}
+.notes-grade input{width:70px;border:1px solid var(--line);border-radius:7px;padding:4px 6px}
+.tpls{display:flex;flex-wrap:wrap;gap:6px}
+footer{margin-top:30px;font-size:12px;color:var(--muted)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 14px;border-radius:9px;font-size:14px;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+.overlay{position:fixed;inset:0;background:var(--bg);z-index:50;overflow:auto;display:none}
+.overlay.on{display:block}
+.modal-bg{position:fixed;inset:0;background:rgba(20,20,25,.35);z-index:40;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.modal-bg.on{display:flex}
+.panel{background:#fff;border-radius:14px;max-width:720px;width:100%;padding:24px 26px;border:1px solid var(--line)}
+.wizard{max-width:720px;margin:40px auto;padding:0 20px 60px}
+.wizard h1{font-size:26px;margin:0 0 4px}
+.wizard .lead{color:var(--muted);margin:0 0 22px}
+fieldset{border:1px solid var(--line);border-radius:12px;padding:16px 18px 6px;margin:0 0 16px;background:#fff}
+legend{font-weight:700;padding:0 6px;font-size:14px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.f .full{grid-column:1/-1}
+@media (max-width:600px){.f{grid-template-columns:1fr}}
+.f label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);margin-bottom:8px}
+.f input,.f select,.f textarea{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;color:var(--ink);background:#fff;margin:0}
+.f textarea{min-height:64px}
+.err{color:var(--red);font-size:14px;min-height:20px;margin:6px 0}
+.login{max-width:360px;margin:12vh auto;padding:28px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.login input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;margin:12px 0}
+.topic{font-size:14px;color:#3a3d44;margin-top:4px;max-width:720px}
+.copyrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;margin:6px 0}
+.copyrow code{background:var(--soft);padding:3px 8px;border-radius:6px}
+/* Correo preparado */
+.mail{border:1px solid var(--line);border-radius:12px;margin:12px 0;background:#fff;overflow:hidden}
+.mail-h{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--line)}
+.mail-h .ttl{font-weight:700;display:flex;gap:7px;align-items:center}
+.mail-h .seg button{font-size:12px;padding:3px 10px}
+.badge{font-size:11px;background:var(--soft);color:var(--muted);border-radius:5px;padding:2px 7px}
+.mail-f{display:grid;grid-template-columns:62px 1fr auto;gap:8px;align-items:center;padding:7px 14px;border-bottom:1px solid var(--line);font-size:13px}
+.mail-f .k{color:var(--muted)}
+.mail-f .v{font-weight:600;overflow-wrap:anywhere}
+.mail-f .v.ph{font-weight:400;color:var(--muted);font-style:italic}
+.mail textarea.body{display:block;border:0;border-radius:0;margin:0;padding:12px 14px;min-height:260px;font-size:13.5px;line-height:1.55;resize:vertical}
+.mail textarea.body:focus{outline:2px solid var(--blue-bg)}
+.mail-att{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;padding:8px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.mail-att .miss{color:var(--red)}
+.mail-a{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid var(--line);background:#fcfbf8}
+.mail-a .btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}
+.mail-warn{font-size:12px;color:#7a5413;background:var(--amber-bg);padding:6px 14px;border-bottom:1px solid var(--line)}
+.hide{display:none!important}
+.danger{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>Mi titulación · FISEI UTA<small id="who">Período académico Julio – Diciembre 2026</small></h1>
+      <div class="topic" id="topic"></div></div>
+    <div class="controls">
+      <div class="seg" id="segMod">
+        <button data-v="proyecto">Proyecto de investigación</button>
+        <button data-v="articulo">Artículo académico</button>
+      </div>
+      <label class="field">Empresa
+        <select id="empresa"><option value="no">No</option><option value="si">Sí</option></select></label>
+      <label class="field" title="Para ver cómo cambia la línea de tiempo en otra fecha">Ver como fecha
+        <input type="date" id="hoy"></label>
+      <button class="btn" onclick="openDatos()">👤 Mis datos</button>
+    </div>
+  </header>
+
+  <div class="alerts" id="alerts"></div>
+
+  <div class="grid-top">
+    <div class="card here" id="here"></div>
+    <div class="card now" id="nowBox"></div>
+  </div>
+
+  <div class="section-title"><h2>Línea de tiempo</h2>
+    <div class="legend">
+      <span class="pill s-disponible">Puedes hacerlo ya</span><span class="pill s-en_espera">En manos de la Facultad</span>
+      <span class="pill s-bloqueado">Esperando un paso previo</span><span class="pill s-proximo">Aún no abre</span>
+      <span class="pill s-hecho">Hecho</span><span class="pill s-vencido">Vencido</span>
+    </div>
+  </div>
+  <div class="card gantt"><div class="g-inner" id="gantt"></div></div>
+
+  <div class="section-title"><h2>Pasos y documentos</h2>
+    <div class="tpls"><a class="btn ghost" href="/plantilla/Cronograma_titulacion.pdf">Cronograma (PDF)</a>
+      <a class="btn ghost" href="/plantilla/Agenda_titulacion_jul-dic2026.pdf">Agenda (PDF)</a></div>
+  </div>
+  <div id="steps"></div>
+
+  <footer>Datos guardados en <b>titulacion.db</b> (SQLite) y en la carpeta <b>documentos/</b> junto a la app.
+    Fechas tomadas del Cronograma FISEI y la Agenda de Titulación Jul–Dic 2026. Verifica siempre con la Unidad de Titulación.</footer>
+</div>
+
+<!-- Asistente inicial -->
+<div class="overlay" id="wiz"><div class="wizard">
+  <h1>Bienvenido 👋</h1>
+  <p class="lead">Completa tus datos una sola vez. Se usarán para personalizar los requisitos, los asuntos de correo y los nombres de archivo. Podrás cambiarlos luego en «Mis datos».</p>
+  <form id="wizForm" autocomplete="on"></form>
+  <p class="small" style="margin-top:20px">¿Ya usabas la app en otra computadora? <a href="#" onclick="$('#restoreInit').click();return false">Restaurar desde un respaldo (.zip)</a>
+    <input type="file" id="restoreInit" accept=".zip" hidden></p>
+</div></div>
+
+<!-- Inicio de sesión -->
+<div class="overlay" id="loginBox"><div class="login">
+  <h2 style="margin:0 0 4px">Mi titulación</h2><p class="small" style="margin:0">Ingresa tu contraseña</p>
+  <form id="loginForm"><input type="password" id="loginPass" autocomplete="current-password" autofocus>
+  <div class="err" id="loginErr"></div><button class="btn primary" style="width:100%;justify-content:center">Entrar</button></form>
+</div></div>
+
+<!-- Mis datos -->
+<div class="modal-bg" id="datosBg"><div class="panel">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Mis datos</h2>
+    <button class="btn ghost" onclick="closeDatos()">✕ Cerrar</button></div>
+  <p class="small">Úsalos para llenar los formatos (Anexos). Haz clic en 📋 para copiar.</p>
+  <form id="datosForm"></form>
+  <div class="row-actions"><button class="btn primary" onclick="saveDatos()">Guardar cambios</button><span class="err" id="datosErr"></span></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+  <h3 style="margin:0 0 8px;font-size:15px">Respaldo</h3>
+  <p class="small" style="margin-top:0">Descarga un .zip con la base de datos y todos tus documentos. Sirve para mover tus datos entre tu computadora y el servidor.</p>
+  <div class="row-actions"><a class="btn" href="/api/respaldo">⬇ Descargar respaldo</a>
+    <button class="btn" onclick="$('#restoreFile').click()">⬆ Restaurar respaldo…</button><input type="file" id="restoreFile" accept=".zip" hidden></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+  <h3 style="margin:0 0 8px;font-size:15px">Contraseña</h3>
+  <div class="f"><label>Actual<input type="password" id="pwOld" autocomplete="current-password"></label>
+    <label>Nueva (mín. 6)<input type="password" id="pwNew" autocomplete="new-password"></label></div>
+  <div class="row-actions"><button class="btn" onclick="changePw()">Cambiar contraseña</button>
+    <button class="btn ghost" onclick="logout()">Cerrar sesión</button><span class="err" id="pwErr"></span></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="picker" multiple hidden>
+
+<script>
+const $ = s => document.querySelector(s);
+const open = new Set();
+let S = null, firstLoad = true;
+const MESES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const DIAS = ["dom","lun","mar","mié","jue","vie","sáb"];
+const LBL = {hecho:"Hecho",disponible:"Puedes hacerlo ya",en_espera:"En manos de la Facultad",bloqueado:"Esperando paso previo",proximo:"Aún no abre",vencido:"Vencido"};
+
+const pd = s => { const [d,t] = s.split(" "); const [y,m,dd] = d.split("-").map(Number); const [h,mi] = (t||"00:00").split(":").map(Number); return new Date(y,m-1,dd,h,mi); };
+const fmtD = d => `${DIAS[d.getDay()]} ${d.getDate()} ${MESES[d.getMonth()]}`;
+const fmtT = d => (d.getHours()===23 && d.getMinutes()===59) ? "" : ` ${String(d.getHours()).padStart(2,"0")}h${String(d.getMinutes()).padStart(2,"0")}`;
+const sameDay = (a,b) => a.toDateString()===b.toDateString();
+function ventana(p){
+  const a = pd(p.inicio), b = pd(p.fin);
+  if (sameDay(a,b)) return fmtD(b) + fmtT(b);
+  if (a.getMonth()<10) return "hasta " + fmtD(b) + fmtT(b);
+  return `${fmtD(a)} → ${fmtD(b)}${fmtT(b)}`;
+}
+function cuenta(p){
+  if (p.estado==="hecho") return "";
+  if (p.estado==="proximo") return `abre en ${dias(p.dias_para_abrir)}`;
+  if (p.estado==="vencido") return "plazo cerrado";
+  return `quedan ${dias(p.dias_restantes)}`;
+}
+function dias(x){ if (x < 1) { const h = Math.max(0, Math.round(x*24)); return `${h} h`; } const d = Math.floor(x); return `${d} día${d===1?"":"s"}`; }
+const esc = s => String(s??"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const kb = n => n > 1048576 ? (n/1048576).toFixed(1)+" MB" : Math.max(1,Math.round(n/1024))+" KB";
+function toast(t){ const e=$("#toast"); e.textContent=t; e.classList.add("on"); clearTimeout(e._t); e._t=setTimeout(()=>e.classList.remove("on"),1800); }
+
+async function api(url, opt={}){ const r = await fetch(url, opt); if(r.status===401 && !url.includes("login")){ boot(); throw new Error("Sesión expirada"); } if(!r.ok){ const j = await r.json().catch(()=>({})); throw new Error(j.error||r.statusText);} return r.json(); }
+async function load(){
+  const h = $("#hoy").value;
+  S = await api("/api/estado" + (h ? "?hoy="+h : ""));
+  render();
+  if (firstLoad && S.actual){ open.add(S.actual); firstLoad=false; render(); }
+}
+const post = (url, body) => api(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+
+function render(){
+  const c = S.config;
+  document.querySelectorAll("#segMod button").forEach(b => b.classList.toggle("on", b.dataset.v===c.modalidad));
+  $("#who").textContent = (c.nombre ? c.nombre + " · " : "") + (c.carrera ? c.carrera + " · " : "") + "Período Julio – Diciembre 2026";
+  $("#topic").innerHTML = c.tema ? `<b>Tema:</b> ${esc(c.tema)}${c.tutor?` · <span class="small">Tutor: ${esc(c.tutor)}</span>`:""}` : "";
+  $("#empresa").value = c.empresa||"no";
+  $("#empresa").parentElement.style.display = c.modalidad==="proyecto" ? "" : "none";
+  renderAlerts(); renderHere(); renderNow(); renderGantt(); renderSteps();
+}
+
+function renderAlerts(){
+  $("#alerts").innerHTML = S.alertas.map(a => `<div class="alert">⚠ ${esc(a.texto)}</div>`).join("");
+}
+
+function byId(id){ return S.pasos.find(p => p.id===id); }
+
+function renderHere(){
+  const p = byId(S.actual);
+  const pr = S.progreso;
+  if (!p){ $("#here").innerHTML = `<div class="eyebrow">Proceso</div><h2>¡Todos los pasos están marcados como hechos! 🎓</h2>`; return; }
+  const fin = pd(p.fin);
+  const pct = Math.round(pr.hechos/pr.total*100);
+  const docs = p.docs_total ? `<div style="margin-top:12px"><div class="small" style="margin-bottom:4px">Documentos de este paso: ${p.docs_listos}/${p.docs_total}</div><div class="bar"><i style="width:${p.docs_total?p.docs_listos/p.docs_total*100:0}%"></i></div></div>` : "";
+  let qu = "";
+  if (p.estado==="disponible") qu = "Puedes realizarlo ahora.";
+  else if (p.estado==="en_espera") qu = `Depende de ${esc(p.actor_nombre)}. Mientras tanto, mira lo que puedes adelantar →`;
+  else if (p.estado==="bloqueado") qu = "Primero hay que terminar: " + p.deps_pendientes.map(d=>esc(d.titulo)).join(", ");
+  else if (p.estado==="proximo") qu = `La ventana abre el ${fmtD(pd(p.inicio))}.`;
+  else if (p.estado==="vencido") qu = "El plazo de este paso ya cerró. Si lo hiciste, márcalo como hecho.";
+  $("#here").innerHTML = `
+    <div class="eyebrow">Estás aquí · paso ${p.orden} de ${pr.total}</div>
+    <h2>${esc(p.titulo)}</h2>
+    <div class="meta"><span class="pill s-${p.estado}">${LBL[p.estado]}</span><span>Responsable: <b>${esc(p.actor_nombre)}</b></span><span>${ventana(p)}</span></div>
+    <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-end">
+      <div><div class="big">${p.estado==="vencido"?"—":cuenta(p).replace(/^(quedan|abre en) /,"")}</div><div class="small">${p.estado==="proximo"?"para que abra · "+fmtD(pd(p.inicio)):"para el plazo · "+fmtD(fin)+fmtT(fin)}</div></div>
+      <div style="flex:1;min-width:180px"><div class="small" style="margin-bottom:4px">Avance general: ${pr.hechos}/${pr.total} pasos (${pct}%)</div><div class="bar"><i style="width:${pct}%;background:var(--green)"></i></div></div>
+    </div>
+    ${docs}
+    <p class="small" style="margin:12px 0 0;color:var(--ink)">${qu}</p>
+    <div class="row-actions"><button class="btn primary" onclick="goStep('${p.id}')">Abrir este paso</button></div>`;
+}
+
+function renderNow(){
+  const disp = S.pasos.filter(p => p.puedo_hacerlo).sort((a,b)=>a.fin.localeCompare(b.fin));
+  const prox = S.pasos.filter(p => p.estado==="proximo" && p.actor==="estudiante").slice(0,2);
+  let h = `<h3>Puedes hacer ahora (${disp.length})</h3>`;
+  h += disp.length ? disp.map(p => `<div class="chip" onclick="goStep('${p.id}')"><b>${esc(p.titulo)}</b><span>${cuenta(p)}</span></div>`).join("")
+                   : `<p class="small">Nada disponible para ti en este momento.</p>`;
+  if (prox.length) h += `<h3 style="margin-top:14px">Próximas ventanas</h3>` + prox.map(p => `<div class="chip" style="background:var(--gray-bg)" onclick="goStep('${p.id}')"><b>${esc(p.titulo)}</b><span style="color:var(--muted)">${fmtD(pd(p.inicio))}</span></div>`).join("");
+  $("#nowBox").innerHTML = h;
+}
+
+function renderGantt(){
+  const start = new Date(2026,10,2), end = new Date(2026,11,23);
+  const span = (end-start);
+  const pos = d => Math.max(0, Math.min(100, (d-start)/span*100));
+  const now = pd(S.ahora);
+  let axis = "", grid = "";
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)){
+    const x = pos(d);
+    if (d.getDay()===1){
+      axis += `<div class="g-day week" style="left:${x}%"><div class="m">${d.getDate()} ${MESES[d.getMonth()]}</div><div>lun</div></div>`;
+      grid += `<i style="left:${x}%"></i>`;
+    }
+  }
+  let rows = "";
+  for (const f of S.fases){
+    rows += `<div class="g-phase" style="color:${f.color}">${esc(f.nombre)}</div>`;
+    for (const p of S.pasos.filter(p => p.fase===f.id)){
+      const a = pd(p.inicio), b = pd(p.fin);
+      const cut = a < start;
+      let l = pos(a), r = pos(b);
+      if (sameDay(a,b)){ l = pos(new Date(a.getFullYear(),a.getMonth(),a.getDate())); r = pos(new Date(a.getFullYear(),a.getMonth(),a.getDate()+1)); }
+      rows += `<div class="g-row ${p.id===S.actual?"cur":""}" onclick="goStep('${p.id}')" title="${esc(p.titulo)} · ${ventana(p)} · ${LBL[p.estado]}">
+        <div class="g-label"><em>${p.orden}</em>${esc(p.titulo)}</div>
+        <div class="g-track"><div class="g-bar b-${p.estado} ${cut?"cut":""}" style="left:${l}%;width:${Math.max(0.6,r-l)}%"></div></div></div>`;
+    }
+  }
+  const tx = pos(now);
+  const today = (now>=start && now<=end) ? `<div class="g-today" style="left:calc(250px + (100% - 250px) * ${tx/100})"><b>Hoy ${now.getDate()} ${MESES[now.getMonth()]}</b></div>`
+             : `<div class="small" style="margin-left:250px">Hoy (${fmtD(now)}) está fuera de este rango.</div>`;
+  $("#gantt").innerHTML = `<div class="g-axis">${axis}</div><div class="g-grid">${grid}</div>${today}${rows}`;
+}
+
+function renderSteps(){
+  let h = "";
+  for (const f of S.fases){
+    h += `<div class="phase"><div class="phase-h"><span class="dot" style="background:${f.color}"></span><h3>${f.orden}. ${esc(f.nombre)}</h3></div>`;
+    for (const p of S.pasos.filter(p => p.fase===f.id)) h += stepHTML(p);
+    h += `</div>`;
+  }
+  $("#steps").innerHTML = h;
+  document.querySelectorAll(".doc").forEach(el => {
+    el.addEventListener("dragover", e => { e.preventDefault(); el.classList.add("drag"); });
+    el.addEventListener("dragleave", () => el.classList.remove("drag"));
+    el.addEventListener("drop", e => { e.preventDefault(); el.classList.remove("drag"); upload(el.dataset.clave, e.dataTransfer.files); });
+  });
+}
+
+function stepHTML(p){
+  const isOpen = open.has(p.id);
+  const docsInfo = p.docs_total ? `<span class="small">${p.docs_listos}/${p.docs_total} docs</span>` : "";
+  let b = `<p class="desc">${esc(p.descripcion)}</p>`;
+  if (p.destino) b += `<div class="kv">Enviar a: <code>${esc(p.destino)}</code> <button class="btn ghost" style="padding:2px 7px" onclick="copy(${JSON.stringify(p.destino.split(" ")[0]).replace(/"/g,"&quot;")})">📋</button></div>`;
+  b += personal(p);
+  if (p.deps_pendientes.length && !p.completado)
+    b += `<div class="blocked">Antes debe completarse: ${p.deps_pendientes.map(d=>`<a onclick="goStep('${d.id}')">${esc(d.titulo)}</a>`).join(" · ")}</div>`;
+  if (p.id==="D5") b += gradesHTML();
+  if (p.documentos.length){
+    b += `<div class="docs">` + p.documentos.map(d => docHTML(d)).join("") + `</div>`;
+  }
+  b += mailHTML(p);
+  b += `<div class="row-actions">`;
+  if (p.marcado) b += `<button class="btn" onclick="toggleDone('${p.id}',false)">↺ Desmarcar</button><span class="small">Marcado como hecho el ${esc(p.completado_en)}</span>`;
+  else if (p.auto) b += `<span class="small">✓ Hecho automáticamente (${esc(p.auto)})</span>`;
+  else b += `<button class="btn green" onclick="toggleDone('${p.id}',true)">✓ Marcar como hecho</button>`;
+  if (p.documentos.length > 1) b += `<a class="btn" href="/api/paso/${p.id}/zip">⬇ Descargar carpeta comprimida (numerada)</a>`;
+  b += `</div><textarea placeholder="Notas personales (número de trámite, a quién escribiste, respuestas…)" onchange="saveNotes('${p.id}',this.value)">${esc(p.notas)}</textarea>`;
+  return `<div class="card step st-${p.estado} ${isOpen?"open":""} ${p.id===S.actual?"cur":""}" id="step-${p.id}">
+    <div class="step-h" onclick="toggle('${p.id}')">
+      <div class="num">${p.completado?"✓":p.orden}</div>
+      <div><div class="t">${esc(p.titulo)}</div>
+        <div class="sub"><span>${ventana(p)}</span><span>${esc(p.actor_nombre)}</span>${p.id===S.actual?"<span style='color:var(--ink);font-weight:600'>← estás aquí</span>":""}</div></div>
+      <div class="right"><span class="pill s-${p.estado}">${LBL[p.estado]}</span><span class="small">${cuenta(p)} ${docsInfo}</span></div>
+    </div>
+    <div class="step-b">${b}</div></div>`;
+}
+
+function docHTML(d){
+  const ok = d.archivos.length > 0;
+  const files = d.archivos.map(a => `<div class="file">
+      <a href="/archivo/${a.id}" target="_blank">📄 ${esc(a.nombre)}</a><span class="small">${kb(a.tamano)} · ${esc(a.subido_en)}</span>
+      ${d.clave==="noadeudar" ? `<label class="small">Emitido: <input type="date" value="${a.fecha_emision||""}" onchange="setFecha(${a.id},this.value)"></label>${vence(a)}` : ""}
+      <a class="small" href="/archivo/${a.id}?dl=1">descargar</a>
+      <button class="x" title="Eliminar" onclick="delFile(${a.id})">✕</button></div>`).join("");
+  return `<div class="doc ${ok?"ok":""}" data-clave="${d.clave}">
+    <div class="chk">${ok?"✓":""}</div>
+    <div><div class="n">${esc(d.nombre)}${d.opcional?`<span class="opt">opcional</span>`:""}</div>
+      ${d.nota?`<div class="note">${esc(d.nota)}</div>`:""}
+      ${files?`<div class="files">${files}</div>`:""}</div>
+    <div class="doc-actions">
+      ${d.plantilla?`<a class="btn ghost" href="/plantilla/${encodeURIComponent(d.plantilla)}" title="Descargar formato">📝 Formato</a>`:""}
+      <button class="btn" onclick="pick('${d.clave}')">⬆ Subir</button></div></div>`;
+}
+function vence(a){
+  if (!a.fecha_emision) return `<span class="small" style="color:var(--red)">← indica la fecha de emisión</span>`;
+  const e = new Date(a.fecha_emision+"T00:00"); e.setDate(e.getDate()+30);
+  const v = e < pd(S.ahora);
+  return `<span class="small" style="color:${v?"var(--red)":"var(--green)"}">${v?"venció":"vigente hasta"} ${fmtD(e)}</span>`;
+}
+function gradesHTML(){
+  const c = S.config, p = S.promedio;
+  return `<div class="notes-grade">Calificador 1: <input type="number" step="0.01" min="0" max="10" value="${esc(c.nota_cal1)}" onchange="setCfg({nota_cal1:this.value})">
+    Calificador 2: <input type="number" step="0.01" min="0" max="10" value="${esc(c.nota_cal2)}" onchange="setCfg({nota_cal2:this.value})">
+    ${p!==null?`<b style="color:${p>=7?"var(--green)":"var(--red)"}">Promedio: ${p}/10 ${p>=7?"✓ aprobado":"✗ menor a 7"}</b>`:""}
+    <a class="btn ghost" href="/plantilla/Anexo_Solicitud_recalificacion.docx">📝 Formato recalificación</a></div>`;
+}
+
+function toggle(id){ open.has(id) ? open.delete(id) : open.add(id); render(); }
+function goStep(id){ open.add(id); render(); const el = document.getElementById("step-"+id); el && el.scrollIntoView({behavior:"smooth",block:"start"}); }
+async function toggleDone(id, v){ await post("/api/paso/"+id, {completado:v}); toast(v?"Paso marcado como hecho":"Paso desmarcado"); load(); }
+async function saveNotes(id, v){ await post("/api/paso/"+id, {notas:v}); toast("Notas guardadas"); }
+async function setCfg(o){ await post("/api/config", o); load(); }
+async function setFecha(id, f){ await post(`/api/archivo/${id}/fecha`, {fecha:f}); load(); }
+async function delFile(id){ if (!window.confirm("¿Eliminar este archivo?")) return; await fetch("/api/archivo/"+id, {method:"DELETE"}); toast("Archivo eliminado"); load(); }
+let pickKey = null;
+function pick(k){ pickKey = k; $("#picker").value=""; $("#picker").click(); }
+$("#picker").addEventListener("change", e => upload(pickKey, e.target.files));
+async function upload(clave, files){
+  for (const f of files){
+    try{
+      await api("/api/documento/"+clave, {method:"POST", body:f, headers:{"X-Filename":encodeURIComponent(f.name)}});
+    }catch(err){ toast("Error: "+err.message); return; }
+  }
+  toast(files.length>1?`${files.length} archivos subidos`:"Archivo subido");
+  load();
+}
+
+// ---------- Datos del estudiante ----------
+const CAMPOS = [
+  ["Tus datos", [
+    ["nombre","Apellidos y nombres completos","text",true,"PEREZ ROLDAN JUAN PABLO"],
+    ["cedula","Cédula","text",true,""],
+    ["carrera","Carrera","text",true,"Software, Tecnologías de la Información, Telecomunicaciones…"],
+    ["correo","Correo institucional","email",true,"usuario@uta.edu.ec"],
+    ["telefono","Teléfono celular","tel",false,""],
+    ["direccion","Dirección","text",false,"Obligatoria en la solicitud de sustentación"]]],
+  ["Tu trabajo de titulación", [
+    ["modalidad","Modalidad","modalidad",true],
+    ["tema","Tema aprobado (exactamente como en la resolución)","textarea",true,""],
+    ["tema_en","Tema en inglés (si la revista lo requirió)","textarea",false,"",'articulo'],
+    ["revista","Revista donde se publica / aceptó","text",false,"",'articulo'],
+    ["tutor","Docente tutor","text",false,"Ing. …"],
+    ["empresa","¿El trabajo se hizo en una empresa/institución?","empresa",false,"",'proyecto'],
+    ["empresa_nombre","Nombre de la empresa/institución","text",false,"",'proyecto']]],
+];
+function formHTML(vals, conClave){
+  let h = "";
+  for (const [leg, campos] of CAMPOS){
+    h += `<fieldset><legend>${leg}</legend><div class="f">`;
+    for (const [k,lbl,type,req,ph,mod] of campos){
+      const v = esc(vals[k]||""), cls = (type==="textarea"?"full ":"") + (mod?`only-${mod}`:"");
+      const cp = vals.__copy && !["modalidad","empresa"].includes(type) ? ` <a href="#" onclick="copy(document.querySelector('[name=${k}]').value);return false">📋</a>` : "";
+      let inp;
+      if (type==="modalidad") inp = `<select name="modalidad"><option value="proyecto" ${vals.modalidad!=="articulo"?"selected":""}>Proyecto de investigación</option><option value="articulo" ${vals.modalidad==="articulo"?"selected":""}>Artículo académico</option></select>`;
+      else if (type==="empresa") inp = `<select name="empresa"><option value="no">No</option><option value="si" ${vals.empresa==="si"?"selected":""}>Sí</option></select>`;
+      else if (type==="textarea") inp = `<textarea name="${k}" ${req?"required":""} placeholder="${esc(ph)}">${v}</textarea>`;
+      else inp = `<input name="${k}" type="${type}" value="${v}" ${req?"required":""} placeholder="${esc(ph)}">`;
+      h += `<label class="${cls}"><span>${lbl}${req?" *":""}${cp}</span>${inp}</label>`;
+    }
+    h += `</div></fieldset>`;
+  }
+  if (conClave) h += `<fieldset><legend>Seguridad</legend><p class="small" style="margin-top:0">Protege tus documentos (cédula, notas…), sobre todo si publicas la app en internet.</p><div class="f">
+    <label>Contraseña (mín. 6) *<input name="clave" type="password" minlength="6" required autocomplete="new-password"></label>
+    <label>Repite la contraseña *<input name="clave2" type="password" minlength="6" required autocomplete="new-password"></label></div></fieldset>
+    <div class="err" id="wizErr"></div><button class="btn primary" style="padding:10px 18px">Comenzar →</button>`;
+  return h;
+}
+function syncMod(form){
+  const m = form.querySelector("[name=modalidad]").value;
+  form.querySelectorAll(".only-articulo").forEach(e => e.classList.toggle("hide", m!=="articulo"));
+  form.querySelectorAll(".only-proyecto").forEach(e => e.classList.toggle("hide", m!=="proyecto"));
+}
+const formData = form => Object.fromEntries(new FormData(form).entries());
+
+async function boot(){
+  const st = await (await fetch("/api/sesion")).json();
+  $("#wiz").classList.toggle("on", !st.configurado);
+  $("#loginBox").classList.toggle("on", st.configurado && !st.autenticado);
+  if (!st.configurado){
+    const f = $("#wizForm"); f.innerHTML = formHTML({modalidad:"proyecto"}, true); syncMod(f);
+    f.querySelector("[name=modalidad]").onchange = () => syncMod(f);
+    return;
+  }
+  if (!st.autenticado){ setTimeout(()=>$("#loginPass").focus(), 50); return; }
+  load();
+}
+$("#wizForm").addEventListener("submit", async e => {
+  e.preventDefault(); const d = formData(e.target);
+  if (d.clave !== d.clave2){ $("#wizErr").textContent = "Las contraseñas no coinciden"; return; }
+  delete d.clave2;
+  try { await post("/api/setup", d); firstLoad = true; boot(); toast("¡Listo! Tu línea de tiempo está personalizada"); }
+  catch(err){ $("#wizErr").textContent = err.message; }
+});
+$("#loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  try { await api("/api/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({clave:$("#loginPass").value})}); $("#loginPass").value=""; $("#loginErr").textContent=""; boot(); }
+  catch(err){ $("#loginErr").textContent = err.message; }
+});
+async function restoreFrom(file, url){
+  if (!file) return;
+  if (!window.confirm("Esto reemplazará los datos actuales por los del respaldo. ¿Continuar?")) return;
+  try { await api(url, {method:"POST", body:file}); toast("Respaldo restaurado"); closeDatos(); boot(); }
+  catch(err){ toast(err.message); }
+}
+$("#restoreInit").addEventListener("change", e => restoreFrom(e.target.files[0], "/api/restaurar-inicial"));
+$("#restoreFile").addEventListener("change", e => restoreFrom(e.target.files[0], "/api/restaurar"));
+
+function openDatos(){
+  const f = $("#datosForm"); f.innerHTML = formHTML({...S.config, __copy:true}, false); syncMod(f);
+  f.querySelector("[name=modalidad]").onchange = () => syncMod(f);
+  $("#datosErr").textContent = ""; $("#pwErr").textContent = "";
+  $("#datosBg").classList.add("on");
+}
+function closeDatos(){ $("#datosBg").classList.remove("on"); }
+$("#datosBg").addEventListener("click", e => { if (e.target.id==="datosBg") closeDatos(); });
+async function saveDatos(){
+  const f = $("#datosForm"); if (!f.reportValidity()) return;
+  await post("/api/config", formData(f)); toast("Datos guardados"); closeDatos(); load();
+}
+async function changePw(){
+  try { await post("/api/clave", {actual:$("#pwOld").value, nueva:$("#pwNew").value}); $("#pwOld").value=$("#pwNew").value=""; $("#pwErr").textContent=""; toast("Contraseña cambiada"); }
+  catch(err){ $("#pwErr").textContent = err.message; }
+}
+async function logout(){ await fetch("/api/logout"); closeDatos(); S=null; boot(); }
+async function copy(t){ try { await navigator.clipboard.writeText(t); toast("Copiado"); } catch { toast("No se pudo copiar"); } }
+
+// Textos personalizados por paso
+function personal(p){
+  const c = S.config;
+  const row = (lbl, t) => t ? `<div class="copyrow"><span class="small">${lbl}</span><code>${esc(t)}</code><button class="btn ghost" style="padding:2px 7px" onclick='copy(${JSON.stringify(t).replace(/&/g,"&amp;").replace(/'/g,"&#39;")})'>📋</button></div>` : "";
+  const arch = [c.nombre, c.cedula].filter(Boolean).join(" ");
+  let h = "";
+  if (p.id==="S1" || p.id==="S2" || p.id==="S3") h += row("Nombre del PDF:", arch ? arch + ".pdf" : "");
+  return h;
+}
+
+// ---------- Correos preparados (Para / CC / Asunto / Mensaje) ----------
+const MAILS = {}, mailTab = {}, mailDraft = {};
+const CORREO_TITULACION = "titulacion_fisei@uta.edu.ec", CORREO_INFO = "informacion.fisei@uta.edu.ec";
+const CORREO_BIBLIO = "edissonhtoaza@uta.edu.ec", CORREO_DECANATO = "decanato.fisei@uta.edu.ec";
+
+// Nombre corto: quita aclaraciones entre paréntesis, salvo las que nombran un Anexo
+const nombreCorto = n => n.replace(/\s*\((?![^)]*Anexo)[^)]*\)/g, "").trim();
+
+function correos(p){
+  const c = S.config;
+  const nom = (c.nombre||"").trim() || "(nombre del estudiante)", NOM = nom.toUpperCase();
+  const esArt = c.modalidad==="articulo";
+  const MOD = esArt ? "ARTÍCULO ACADÉMICO" : "PROYECTO DE INVESTIGACIÓN";
+  const tema = (c.tema||"").trim() || "(tema aprobado)";
+  const tutor = (c.tutor||"").trim() || "(nombre del tutor)";
+  const fin = `\n\nSaludos\n\n${nom}`;
+  const pdf = [c.nombre, c.cedula].filter(Boolean).join(" ") + ".pdf";
+  const trabajo = esArt ? "las hojas preliminares de mi artículo académico" : "mi trabajo de titulación";
+  const doc = k => p.documentos.find(d => d.clave===k);
+  const falta = k => { const d = doc(k); return d && !d.archivos.length; };
+  // Lista numerada igual que la carpeta comprimida del paso (los opcionales sin archivo no van)
+  const lista = () => adj().map((d, i) => `${i+1}. ${nombreCorto(d.nombre)}`).join("\n");
+  const adj = keys => keys ? keys.map(doc).filter(Boolean) : p.documentos.filter(d => !d.opcional || d.archivos.length);
+  const M = [];
+
+  if (p.id==="D1"){
+    M.push({tab:"Solicitud de calificadores", para:CORREO_INFO, paraNom:"Información FISEI", zip:true, adj:adj(),
+      asunto:`Designación de calificadores | ${nom}`,
+      cuerpo:`Solicito de la manera más comedida la designación de calificadores de mi trabajo de titulación «${tema}».\n\nDocumentos adjuntos:\n${lista()}${fin}`});
+    M.push({tab:"Aval de informes", para:CORREO_TITULACION, paraNom:"Unidad de Titulación FISEI", adj:[],
+      asunto:`Aval de revisión de informes (${nom})`,
+      cuerpo:`Solicito de la manera más comedida se emita el aval de revisión de los informes mensuales e informe final del trabajo de titulación desarrollado bajo la tutoría del ${tutor}.${fin}`});
+    const pend = [];
+    if (falta("tutor100")) pend.push("- Informe de cumplimiento del 100% (Anexo 11)");
+    if (falta("mensuales")) pend.push("- Informes mensuales (Anexo 5)");
+    if (falta("turnitin")) pend.push("- Informe de similitud Turnitin");
+    M.push({tab:"Pedir al tutor", para:"", paraNom:`${tutor} (su correo)`, adj:[],
+      asunto:`Informes de tutoría | ${nom}`,
+      cuerpo:`Solicito de la manera más comedida me ayude con los siguientes documentos para la designación de calificadores:\n${pend.length?pend.join("\n"):"- (ya tienes todo)"}${fin}`});
+  }
+  if (p.id==="D5"){
+    M.push({tab:"Pedir calificaciones", para:CORREO_TITULACION, paraNom:"Unidad de Titulación FISEI", adj:[],
+      asunto:`Calificaciones del informe final | ${nom}`,
+      cuerpo:`Solicito de la manera más comedida se me entreguen las calificaciones (Anexo 12) de mi trabajo de titulación «${tema}».${fin}`});
+  }
+  if (p.id==="T3"){
+    M.push({tab:"Aptitud legal", para:CORREO_INFO, paraNom:"Información FISEI", zip:true, adj:adj(),
+      asunto:`Certificado de aptitud legal | ${nom}`,
+      cuerpo:`Solicito de la manera más comedida se emita mi certificado de aptitud legal.\n\nDocumentos adjuntos:\n${lista()}${fin}`});
+    M.push({tab:"Requisitos habilitantes", para:"", paraNom:`Coordinación de ${c.carrera||"tu carrera"} (su correo)`, adj:[],
+      asunto:`Certificación de requisitos habilitantes | ${nom}`,
+      cuerpo:`Solicito de la manera más comedida se emita mi certificación actualizada de requisitos habilitantes para el trámite de aptitud legal.${fin}`});
+  }
+  if (p.id==="S1"){
+    M.push({tab:"Aval inicial", para:CORREO_BIBLIO, paraNom:"Ing. Edisson Toaza – Biblioteca", adj:adj(["trabajo_sin_firmas"]), pdf,
+      asunto:`${MOD} – ${NOM}`,
+      cuerpo:`Remito ${trabajo} sin firmas para la revisión y aval inicial de Biblioteca.${fin}`});
+  }
+  if (p.id==="S2"){
+    M.push({tab:"Pedir firma (calificadores / tutor)", para:"", paraNom:"Calificador o tutor (su correo)", adj:adj(["trabajo_firmado"]), pdf,
+      asunto:`Firma de hojas preliminares | ${nom}`,
+      cuerpo:`Solicito de la manera más comedida su firma en ${trabajo}. Adjunto el archivo.${fin}`});
+    M.push({tab:"Firma del Decano", para:CORREO_DECANATO, paraNom:"Decanato FISEI", adj:adj(["trabajo_firmado"]), pdf,
+      asunto:`Firma de hojas preliminares | ${nom}`,
+      cuerpo:`Solicito de la manera más comedida su firma en ${trabajo}, que ya cuenta con las firmas del estudiante, calificadores y tutor. Adjunto el archivo.${fin}`});
+  }
+  if (p.id==="S3"){
+    M.push({tab:"Aval final", para:CORREO_BIBLIO, paraNom:"Ing. Edisson Toaza – Biblioteca", adj:adj(["trabajo_firmado"]), pdf,
+      asunto:`${MOD} – ${NOM}`,
+      cuerpo:`Remito ${trabajo} con todas las firmas para el aval final de Biblioteca.${fin}`});
+  }
+  if (p.id==="S5"){
+    M.push({tab:"Día y hora", para:CORREO_INFO, paraNom:"Información FISEI", zip:true, adj:adj(),
+      asunto:`Día y hora de sustentación | ${nom}`,
+      cuerpo:`Solicito de la manera más comedida se fije día y hora para mi sustentación.\n\nDocumentos adjuntos:\n${lista()}${fin}`});
+  }
+  return M;
+}
+
+function mailHTML(p){
+  const M = correos(p);
+  if (!M.length) return "";
+  const i = Math.min(mailTab[p.id]||0, M.length-1);
+  const m = M[i], key = `${p.id}:${i}`;
+  MAILS[key] = m;
+  const body = mailDraft[key] ?? m.cuerpo;
+  const cp = (what) => `<button class="btn ghost" style="padding:2px 7px" title="Copiar" onclick="mailCopy('${key}','${what}')">📋</button>`;
+  const tabs = M.length > 1 ? `<div class="seg">${M.map((x,j)=>`<button class="${j===i?"on":""}" onclick="mailTab['${p.id}']=${j};render()">${esc(x.tab)}</button>`).join("")}</div>` : "";
+  const listos = m.adj.filter(d => d.archivos.length), faltan = m.adj.filter(d => !d.archivos.length && !d.opcional);
+  let att = "";
+  if (m.adj.length){
+    att = `<div class="mail-att"><span>📎 ${listos.length}/${m.adj.length} documento${m.adj.length===1?"":"s"} listo${m.adj.length===1?"":"s"}${faltan.length?` · <span class="miss">falta: ${faltan.map(d=>esc(nombreCorto(d.nombre))).join(", ")}</span>`:""}</span>
+      <span>${m.zip?`<a href="/api/paso/${p.id}/zip">⬇ Descargar ZIP numerado</a> y adjúntalo manualmente`:(m.pdf?`Adjunta el PDF como <b>${esc(m.pdf)}</b>`:"Adjunta el archivo manualmente")}</span></div>`;
+  }
+  const edited = mailDraft[key] !== undefined && mailDraft[key] !== m.cuerpo;
+  return `<div class="mail">
+    <div class="mail-h"><span class="ttl">✉ Tu correo, preparado</span>${tabs}<span class="badge">${edited?"Editado":"Borrador"}</span></div>
+    ${m.para===CORREO_INFO||m.para===CORREO_TITULACION?`<div class="mail-warn">⚠ Envíalo desde tu correo institucional${S.config.correo?` <b>${esc(S.config.correo)}</b>`:""}; no se tramitan correos personales.</div>`:""}
+    <div class="mail-f"><span class="k">Para</span><span class="v ${m.para?"":"ph"}">${m.para?`${esc(m.para)} <span class="small">· ${esc(m.paraNom)}</span>`:esc(m.paraNom)}</span>${m.para?cp("para"):"<span></span>"}</div>
+    ${m.cc?`<div class="mail-f"><span class="k">CC</span><span class="v">${esc(m.cc)}</span>${cp("cc")}</div>`:""}
+    <div class="mail-f"><span class="k">Asunto</span><span class="v">${esc(m.asunto)}</span>${cp("asunto")}</div>
+    <textarea class="body" spellcheck="true" oninput="mailEdit('${key}',this)">${esc(body)}</textarea>
+    ${att}
+    <div class="mail-a">
+      <button class="btn blue" onclick="mailCopy('${key}','todo')">📋 Copiar correo completo</button>
+      <button class="btn" onclick="mailCopy('${key}','cuerpo')">Solo el mensaje</button>
+      <a class="btn" href="${esc(mailtoURL(m, body))}" title="Abre tu programa de correo con todo rellenado">↗ Abrir en mi correo</a>
+      ${edited?`<button class="btn ghost" onclick="mailReset('${key}')">↺ Restablecer texto</button>`:""}
+    </div></div>`;
+}
+function mailtoURL(m, body){
+  const q = [`subject=${encodeURIComponent(m.asunto)}`, `body=${encodeURIComponent(body)}`];
+  if (m.cc) q.push(`cc=${encodeURIComponent(m.cc)}`);
+  return `mailto:${m.para||""}?${q.join("&")}`;
+}
+function mailEdit(key, el){
+  const v = el.value; mailDraft[key] = v;
+  const box = el.closest(".mail");
+  box.querySelector(".badge").textContent = v!==MAILS[key].cuerpo ? "Editado" : "Borrador";
+  box.querySelector('a[href^="mailto:"]').setAttribute("href", mailtoURL(MAILS[key], v));
+}
+function mailReset(key){ delete mailDraft[key]; render(); }
+function mailCopy(key, what){
+  const m = MAILS[key], body = mailDraft[key] ?? m.cuerpo;
+  const t = {para:m.para, cc:m.cc, asunto:m.asunto, cuerpo:body,
+    todo:[`Para: ${m.para||m.paraNom}`, m.cc&&`CC: ${m.cc}`, `Asunto: ${m.asunto}`, "", body].filter(x=>x!==undefined&&x!==null&&x!==false).join("\n")}[what];
+  copy(t);
+}
+
+$("#segMod").addEventListener("click", e => { if (e.target.dataset.v) setCfg({modalidad:e.target.dataset.v}); });
+$("#empresa").addEventListener("change", e => setCfg({empresa:e.target.value}));
+$("#hoy").addEventListener("change", load);
+boot();
+setInterval(() => { if (S && !$("#hoy").value && !$("#datosBg").classList.contains("on") && !document.querySelector("textarea:focus,input:focus")) load(); }, 60000);
+</script>
+</body>
+</html>

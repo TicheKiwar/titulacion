@@ -1,0 +1,59 @@
+SEGUIMIENTO DE TITULACIÓN FISEI – UTA (Julio–Diciembre 2026)
+=============================================================
+
+La primera vez que abras la app verás un asistente para llenar tus datos (nombre, cédula,
+carrera, correo institucional, modalidad, tema, tutor, empresa) y crear una contraseña.
+Luego puedes cambiarlos en el botón «Mis datos».
+
+---------------------------------------------------------------
+A) USARLA EN TU COMPUTADORA
+---------------------------------------------------------------
+Requisito: Python 3.8 o superior (https://www.python.org/downloads/). Nada más.
+  - Windows: doble clic en INICIAR_Windows.bat
+  - Mac / Linux: ./iniciar_mac_linux.sh   (o  python3 app.py)
+Se abre http://localhost:8765 . Deja la ventana de la consola abierta mientras la usas.
+
+---------------------------------------------------------------
+B) PUBLICARLA GRATIS EN INTERNET (PythonAnywhere) – acceso desde el celular o cualquier PC
+---------------------------------------------------------------
+1. Crea una cuenta gratuita "Beginner" en https://www.pythonanywhere.com
+   (no pide tarjeta). Tu usuario será parte de la dirección: https://TU_USUARIO.pythonanywhere.com
+
+2. Pestaña "Files": sube el archivo Seguimiento_Titulacion_FISEI.zip a tu carpeta /home/TU_USUARIO/
+
+3. Pestaña "Consoles" → "Bash". Escribe:
+       unzip Seguimiento_Titulacion_FISEI.zip
+   (se crea la carpeta /home/TU_USUARIO/titulacion)
+
+4. Pestaña "Web" → "Add a new web app" → Next → "Manual configuration" → elige la versión
+   de Python más reciente → Next.
+
+5. En esa misma pestaña, abre el enlace "WSGI configuration file". BORRA todo su contenido
+   y pega el contenido de pythonanywhere_wsgi.py (cambiando TU_USUARIO). Guarda (Save).
+
+6. En la pestaña "Web": activa "Force HTTPS" y pulsa el botón verde "Reload".
+
+7. Entra de inmediato a https://TU_USUARIO.pythonanywhere.com y completa el asistente
+   (así nadie más puede configurarla antes que tú). Listo: entra desde cualquier lugar con tu contraseña.
+
+IMPORTANTE en la cuenta gratuita:
+  - La app se desactiva si no la renuevas: cada mes entra a la pestaña "Web" y pulsa
+    "Run until 1 month from today". (Tu proceso termina el 21-dic, así que bastará 1 o 2 veces.)
+  - Espacio: 512 MB en total. Suficiente para PDFs; evita subir videos o archivos enormes.
+  - Tus documentos (cédula, notas…) quedan en un servidor externo protegido con tu contraseña.
+    Usa una contraseña que no uses en otro lado.
+
+Pasar tus datos de la PC al servidor (o al revés):
+  En «Mis datos» → «Descargar respaldo» genera un .zip con la base SQLite y todos tus documentos.
+  En la otra instalación, en el asistente inicial pulsa «Restaurar desde un respaldo»
+  (o en «Mis datos» → «Restaurar respaldo»).
+
+---------------------------------------------------------------
+QUÉ GUARDA Y DÓNDE
+---------------------------------------------------------------
+  - titulacion.db   Base de datos SQLite (tus datos, pasos, notas, calificaciones, registro de archivos).
+  - documentos/     Los archivos que subes.
+  - plantillas/     Formatos oficiales (Anexos 10, 12, 14, 15, portadas, no adeudar, cronograma…).
+La app usa siempre la hora de Ecuador (UTC-5), aunque el servidor esté en otro país.
+
+Opcional: PORT=9000 python3 app.py  (otro puerto)  ·  TITULACION_DATA=/ruta  (otra carpeta de datos)

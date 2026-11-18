@@ -1,0 +1,11 @@
+# Datos personales de cada instalación (no subir)
+titulacion.db
+titulacion.db-*
+documentos/
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
